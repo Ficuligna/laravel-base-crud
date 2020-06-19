@@ -17,12 +17,25 @@ class DinosauriniController extends Controller
   public function delete($id){
     $dinosaurino = Dinosaurino::findOrFail($id);
     $dinosaurino -> delete();
-    return redirect() -> route("home");
+    return redirect() -> route("home")
+                      -> with('status', 'il dinosaurino '. $dinosaurino["first_name"] . ' è stato rimosso');
   }
   public function create(){
     return view("dinosaurino_create");
   }
   public function store(Request $request){
+
+    $validate = $request ->validate([
+       "first_name" => 'required|string',
+       "last_name" => 'required|string',
+       "address" => 'required|string',
+       "code" => 'required|string',
+       "state" => 'required|string',
+       "phone_number" => 'required|digits_between:8,12',
+       "role" => 'required|string',
+       "morto_per_colpa_di_Albano" => 'required|string'
+
+    ]);
 
     $dinosaurino = new Dinosaurino;
     $dinosaurino -> first_name = $request -> first_name;
@@ -35,7 +48,9 @@ class DinosauriniController extends Controller
     $dinosaurino -> morto_per_colpa_di_Albano = $request -> morto_per_colpa_di_Albano;
 
     $dinosaurino -> save();
-    return redirect() -> route("home");
+    return redirect() -> route("home")
+                      -> with('status', 'il dinosaurino '. $dinosaurino["first_name"] . ' è stato aggiunto');
+
   }
   public function edit($id){
 
@@ -44,8 +59,9 @@ class DinosauriniController extends Controller
     return view("dinosaurino_edit", compact("dinosaurino"));
   }
   public function update(Request $request , $id){
+
     $dinosaurino = Dinosaurino::findOrFail($id);
-    
+
     $dinosaurino -> first_name = $request -> first_name;
     $dinosaurino -> last_name = $request -> last_name;
     $dinosaurino -> address = $request -> address;
@@ -56,7 +72,10 @@ class DinosauriniController extends Controller
     $dinosaurino -> morto_per_colpa_di_Albano = $request -> morto_per_colpa_di_Albano;
 
     $dinosaurino -> save();
-    return redirect() -> route("home");
+
+    return redirect() -> route("home")
+                      -> with('status', 'il dinosaurino '. $dinosaurino["first_name"] . ' è stato modificato');
+
   }
 
 }
